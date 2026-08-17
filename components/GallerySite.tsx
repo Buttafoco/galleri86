@@ -17,6 +17,7 @@ export interface EditorHandlers {
   openImageEdit: (ref: ItemRef) => void;
   openTextEdit: (key: TextKey) => void;
   openAdd: (section: "artists" | "collage") => void;
+  openScheduleEdit: () => void;
 }
 
 interface LbState {
@@ -79,6 +80,7 @@ export default function GallerySite({
       openImageEdit: handlers?.openImageEdit ?? (() => {}),
       openTextEdit: handlers?.openTextEdit ?? (() => {}),
       openAdd: handlers?.openAdd ?? (() => {}),
+      openScheduleEdit: handlers?.openScheduleEdit ?? (() => {}),
       openLightbox: (payload: LightboxPayload) => {
         if (payload.group === "hero" || payload.group === "artist") {
           setLb({ group: payload.group, index: payload.index ?? 0 });
@@ -209,7 +211,7 @@ export default function GallerySite({
         <Hero content={content} />
         <Aktuellt content={content} />
         <Utstallningar content={content} />
-        <Schema />
+        <Schema content={content} />
         <Galleriet content={content} />
         <Boka />
         <Footer />

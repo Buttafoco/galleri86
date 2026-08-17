@@ -26,6 +26,8 @@ export interface EditorApi {
   openTextEdit: (key: TextKey) => void;
   /** Open the "add image" panel for a section (edit mode only). */
   openAdd: (section: "artists" | "collage") => void;
+  /** Open the weekly-schedule side panel (edit mode only). */
+  openScheduleEdit: () => void;
   /** Open the lightbox (all modes). */
   openLightbox: (payload: LightboxPayload) => void;
 }
@@ -39,6 +41,7 @@ export const defaultEditorApi: EditorApi = {
   openImageEdit: noop,
   openTextEdit: noop,
   openAdd: noop,
+  openScheduleEdit: noop,
   openLightbox: noop,
 };
 

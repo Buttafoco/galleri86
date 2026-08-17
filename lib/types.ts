@@ -55,10 +55,26 @@ export interface SiteTexts {
 
 export type TextKey = keyof SiteTexts;
 
-export interface ScheduleRow {
-  name: string;
-  hours: string;
-  event: string;
+export type DayId =
+  | "monday"
+  | "tuesday"
+  | "wednesday"
+  | "thursday"
+  | "friday"
+  | "saturday"
+  | "sunday";
+
+/** One day in "Veckans schema". Weekday id + label are fixed (not client-editable). */
+export interface ScheduleDay {
+  day: DayId;
+  /** Fixed Swedish weekday label, e.g. "MÅN". */
+  label: string;
+  /** Free-text activity/description (max 60 chars). */
+  description: string;
+  closed: boolean;
+  /** "HH:MM" when open, null when closed. */
+  opensAt: string | null;
+  closesAt: string | null;
 }
 
 /** The full editable content of the site. */
@@ -67,6 +83,7 @@ export interface SiteContent {
   artists: ArtistItem[];
   collage: CollageItem[];
   texts: SiteTexts;
+  schedule: ScheduleDay[];
 }
 
 /** Which store an editable image lives in. */

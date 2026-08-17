@@ -216,6 +216,31 @@ header.top nav a { opacity: 0.85; }
 .modal .actions { display: flex; gap: 16px; justify-content: flex-end; flex-wrap: wrap; }
 .modal .btn { min-height: 48px; padding: 0 22px; }
 
+/* weekly schedule — edit affordance on the whole section */
+.sched-box { position: relative; }
+.site--admin .sched-box.editable { border-radius: 6px; transition: outline-color .2s ease; }
+.site--admin .sched-box.editable:hover,
+.site--admin .sched-box.editable:focus-within { outline: 2px solid #C97A55; outline-offset: 12px; }
+.sched-edit-btn { position: absolute; top: -6px; right: 0; z-index: 5; min-height: 44px; padding: 0 18px;
+  background: #111111; color: #F7F6F2; border: none; border-radius: 8px; font-size: 14px; font-weight: 600;
+  cursor: pointer; font-family: inherit; opacity: 0; transition: opacity .2s ease; }
+.sched-box.editable:hover .sched-edit-btn,
+.sched-box.editable:focus-within .sched-edit-btn { opacity: 1; }
+.sched-edit-btn:focus-visible { opacity: 1; outline: 2px solid #C97A55; outline-offset: 2px; }
+
+/* schedule side panel */
+.sched-day { border: 1px solid #e3ddd0; border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.sched-day.has-error { border-color: #e0bcbc; }
+.sched-day__label { font-family: 'Newsreader', Georgia, serif; font-weight: 600; font-size: 16px; letter-spacing: 0.06em; }
+.sched-check { display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer; min-height: 44px; }
+.sched-check input { width: 20px; height: 20px; accent-color: #C97A55; cursor: pointer; }
+.sched-times { display: flex; gap: 12px; }
+.sched-times > div { flex: 1; }
+.panel input[type="time"] { width: 100%; box-sizing: border-box; min-height: 48px; padding: 0 14px; font-size: 15px;
+  border: 1px solid #cabfaf; border-radius: 8px; background: #fff; font-family: inherit; }
+.panel input[type="time"]:focus { outline: 2px solid #C97A55; outline-offset: 1px; border-color: #C97A55; }
+.sched-error { font-size: 13px; color: #a13e3e; line-height: 1.4; }
+
 /* the "Lägg till bild" section buttons */
 .add-row { display: flex; justify-content: center; margin-top: 56px; }
 .add-inline { display: flex; justify-content: space-between; align-items: center; margin: 96px 0 24px; }

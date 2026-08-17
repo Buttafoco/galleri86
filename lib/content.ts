@@ -1,4 +1,4 @@
-import type { SiteContent, ScheduleRow } from "./types";
+import type { SiteContent } from "./types";
 
 const SLOT = "/assets/slots";
 
@@ -174,17 +174,16 @@ export const publishedContent: SiteContent = {
     spaceP:
       "Galleri 86 ligger på Skånegatan 86, nära Nytorget. Ett personligt galleri för konstnärer och kreatörer som vill ställa ut i en intim miljö mitt i SoFo.",
   },
+  schedule: [
+    { day: "monday", label: "MÅN", description: "Stängt för publik", closed: true, opensAt: null, closesAt: null },
+    { day: "tuesday", label: "TIS", description: "Uppbyggnad av utställning", closed: true, opensAt: null, closesAt: null },
+    { day: "wednesday", label: "ONS", description: "Visning: Sofia Feucht", closed: false, opensAt: "12:00", closesAt: "18:00" },
+    { day: "thursday", label: "TOR", description: "Artist talk kl 17", closed: false, opensAt: "12:00", closesAt: "18:00" },
+    { day: "friday", label: "FRE", description: "Öppet hus", closed: false, opensAt: "12:00", closesAt: "18:00" },
+    { day: "saturday", label: "LÖR", description: "Guidad rundvandring kl 13", closed: false, opensAt: "12:00", closesAt: "16:00" },
+    { day: "sunday", label: "SÖN", description: "Familjevisning", closed: false, opensAt: "12:00", closesAt: "16:00" },
+  ],
 };
-
-export const schedule: ScheduleRow[] = [
-  { name: "Mån", hours: "Stängt", event: "Stängt för publik" },
-  { name: "Tis", hours: "Stängt", event: "Uppbyggnad av utställning" },
-  { name: "Ons", hours: "12–18", event: "Visning: Sofia Feucht" },
-  { name: "Tor", hours: "12–18", event: "Artist talk kl 17" },
-  { name: "Fre", hours: "12–18", event: "Öppet hus" },
-  { name: "Lör", hours: "12–16", event: "Guidad rundvandring kl 13" },
-  { name: "Sön", hours: "12–16", event: "Familjevisning" },
-];
 
 /** Deep clone used when seeding the editor's draft from the published content. */
 export function cloneContent(content: SiteContent): SiteContent {
@@ -195,5 +194,6 @@ export function cloneContent(content: SiteContent): SiteContent {
     artists: content.artists.map((a) => ({ ...a })),
     collage: content.collage.map((c) => ({ ...c })),
     texts: { ...content.texts },
+    schedule: content.schedule.map((d) => ({ ...d })),
   };
 }

@@ -1,14 +1,16 @@
 "use client";
 
 import { useRef, useState, type ChangeEvent } from "react";
-import type { ArtistItem, CollageItem, ItemRef, SiteContent, TextKey } from "@/lib/types";
+import type { ArtistItem, CollageItem, ItemRef, ScheduleDay, SiteContent, TextKey } from "@/lib/types";
 import { publishedContent, cloneContent } from "@/lib/content";
+import { validateSchedule } from "@/lib/schedule";
 import GallerySite from "@/components/GallerySite";
 import AdminBar from "./AdminBar";
 import PreviewToolbar from "./PreviewToolbar";
 import ImageEditPanel from "./ImageEditPanel";
 import AddImagePanel from "./AddImagePanel";
 import TextEditPanel from "./TextEditPanel";
+import SchedulePanel from "./SchedulePanel";
 import ConfirmDialog from "./ConfirmDialog";
 import Toast from "./Toast";
 import { type ImageDraft, emptyDraft } from "./types";
@@ -33,6 +35,9 @@ export default function AdminApp() {
   const [textDraft, setTextDraft] = useState("");
   const [addSection, setAddSection] = useState<"artists" | "collage" | null>(null);
   const [addDraft, setAddDraft] = useState<ImageDraft>(emptyDraft);
+  const [editingSchedule, setEditingSchedule] = useState(false);
+  const [scheduleDraft, setScheduleDraft] = useState<ScheduleDay[]>([]);
+  const [scheduleErrors, setScheduleErrors] = useState<Record<string, string>>({});
 
   const [confirmDeleteRef, setConfirmDeleteRef] = useState<ItemRef | null>(null);
   const [confirmPreview, setConfirmPreview] = useState(false);
@@ -191,6 +196,28 @@ export default function AdminApp() {
     showToast("Bilden är tillagd på hemsidan.");
   };
 
+  // ---- weekly schedule ----------------------------------------------------
+  const openScheduleEdit = () => {
+    setScheduleDraft(draft.schedule.map((d) => ({ ...d })));
+    setScheduleErrors({});
+    setEditingSchedule(true);
+  };
+  const scheduleField = (day: string, patch: Partial<ScheduleDay>) =>
+    setScheduleDraft((days) => days.map((d) => (d.day === day ? { ...d, ...patch } : d)));
+  const saveSchedule = (): boolean => {
+    const errs = validateSchedule(scheduleDraft);
+    if (Object.keys(errs).length > 0) {
+      setScheduleErrors(errs);
+      return false;
+    }
+    setDraft((s) => ({ ...s, schedule: scheduleDraft.map((d) => ({ ...d })) }));
+    setDirty(true);
+    setEditingSchedule(false);
+    setScheduleErrors({});
+    showToast("Veckans schema är sparat som utkast.");
+    return true;
+  };
+
   // ---- publish / preview --------------------------------------------------
   const doPublish = () => {
     setPublished(cloneContent(draft));
@@ -205,8 +232,10 @@ export default function AdminApp() {
     setEditingRef(null);
     setEditingText(null);
     setAddSection(null);
+    setEditingSchedule(false);
+    setScheduleErrors({});
   };
-  const hasOpenPanel = () => !!(editingRef || editingText || addSection);
+  const hasOpenPanel = () => !!(editingRef || editingText || addSection || editingSchedule);
   const enterPreview = () => {
     savedScrollY.current = window.scrollY || 0;
     setMode("preview");
@@ -217,7 +246,13 @@ export default function AdminApp() {
     else enterPreview();
   };
   const saveAndPreview = () => {
-    if (editingRef) saveImage();
+    if (editingSchedule) {
+      // don't leave the editor with an invalid schedule
+      if (!saveSchedule()) {
+        setConfirmPreview(false);
+        return;
+      }
+    } else if (editingRef) saveImage();
     else if (editingText) saveText();
     else closePanels();
     setConfirmPreview(false);
@@ -250,7 +285,11 @@ export default function AdminApp() {
         />
       )}
 
-      <GallerySite content={draft} mode={mode} handlers={{ openImageEdit, openTextEdit, openAdd }} />
+      <GallerySite
+        content={draft}
+        mode={mode}
+        handlers={{ openImageEdit, openTextEdit, openAdd, openScheduleEdit }}
+      />
 
       {toast && <Toast message={toast} />}
 
@@ -288,6 +327,16 @@ export default function AdminApp() {
           onChange={setTextDraft}
           onSave={saveText}
           onClose={closePanels}
+        />
+      )}
+
+      {editingSchedule && (
+        <SchedulePanel
+          days={scheduleDraft}
+          errors={scheduleErrors}
+          onField={scheduleField}
+          onSave={saveSchedule}
+          onCancel={closePanels}
         />
       )}
 
