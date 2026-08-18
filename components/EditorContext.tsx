@@ -1,16 +1,13 @@
 "use client";
 
 import { createContext, useContext } from "react";
-import type { ImageItem, ItemRef, SiteMode, TextKey } from "@/lib/types";
+import type { ImageItem, ImagePlacementTarget, ItemRef, SiteMode, TextKey } from "@/lib/types";
 
 export type ImagePlacementPatch = Partial<Pick<ImageItem, "fit" | "positionX" | "positionY" | "zoom">>;
 
 export interface LightboxPayload {
-  src: string | null;
-  artist: string;
-  year: string;
-  title?: string;
-  shortText?: string;
+  image: ImageItem;
+  refItem: ItemRef;
   /** Group used for prev/next navigation on the public site. */
   group?: "hero" | "artist" | null;
   /** Index within the group. */
@@ -20,6 +17,7 @@ export interface LightboxPayload {
 export interface ImageEditPreview {
   aspectRatio: number;
   showCaption: boolean;
+  placementTarget?: ImagePlacementTarget;
 }
 
 export interface EditorApi {
@@ -31,6 +29,7 @@ export interface EditorApi {
   openImageEdit: (ref: ItemRef, preview?: ImageEditPreview) => void;
   /** Image currently being positioned directly in its on-page frame. */
   activeImageRef: ItemRef | null;
+  activePlacementTarget: ImagePlacementTarget | null;
   updateImagePlacement: (patch: ImagePlacementPatch) => void;
   /** Open the text side panel for an editable text (edit mode only). */
   openTextEdit: (key: TextKey) => void;
@@ -52,6 +51,7 @@ export const defaultEditorApi: EditorApi = {
   setHover: noop,
   openImageEdit: noop,
   activeImageRef: null,
+  activePlacementTarget: null,
   updateImagePlacement: noop,
   openTextEdit: noop,
   openAdd: noop,

@@ -2,6 +2,7 @@
 
 import type { CSSProperties, ChangeEvent } from "react";
 import type { ImageEditPreview } from "@/components/EditorContext";
+import type { ImagePlacementTarget } from "@/lib/types";
 import { type ImageDraft, type SetImageDraftField } from "./types";
 import ImageFields from "./ImageFields";
 
@@ -13,6 +14,7 @@ export default function ImageEditPanel({
   onFile,
   uploading,
   preview,
+  placementTarget,
   isList,
   hidden,
   onMoveUp,
@@ -27,6 +29,7 @@ export default function ImageEditPanel({
   onFile: (e: ChangeEvent<HTMLInputElement>) => void;
   uploading: boolean;
   preview: ImageEditPreview;
+  placementTarget: ImagePlacementTarget;
   isList: boolean;
   hidden: boolean;
   onMoveUp: () => void;
@@ -36,6 +39,7 @@ export default function ImageEditPanel({
   onSave: () => void;
   onClose: () => void;
 }) {
+  const popupEditing = placementTarget === "popup";
   const artistLine = draft.title ? `${draft.artist} — ${draft.title}` : draft.artist || "Konstnär";
   const safeAspectRatio = clamp(Number.isFinite(preview.aspectRatio) ? preview.aspectRatio : 16 / 9, 0.75, 2.4);
   const placementStyle: CSSProperties = {
@@ -61,11 +65,13 @@ export default function ImageEditPanel({
   return (
     <>
       <div className="panel-scrim panel-scrim--preview" aria-hidden="true" />
-      <aside className="panel" role="dialog" aria-label="Redigera bild">
-        <h2>Redigera bild</h2>
+      <aside className="panel" role="dialog" aria-label={popupEditing ? "Anpassa popupbild" : "Redigera bild"}>
+        <h2>{popupEditing ? "Anpassa popupbild" : "Redigera bild"}</h2>
 
         <p className="panel-intro">
-          Redigera direkt i den orange ramen: dra bilden för placering och dra hörnet inåt eller utåt för storlek.
+          {popupEditing
+            ? "Ändringarna visas direkt i popupens riktiga ram bakom panelen. Dra bilden för placering och dra hörnet inåt eller utåt för storlek."
+            : "Redigera direkt i den orange ramen: dra bilden för placering och dra hörnet inåt eller utåt för storlek."}
         </p>
 
         <label className="file-btn" style={{ opacity: uploading ? 0.6 : 1, pointerEvents: uploading ? "none" : "auto" }}>
@@ -74,7 +80,7 @@ export default function ImageEditPanel({
         </label>
 
         <div className="placement-controls">
-          <h3>Bildanpassning i ramen</h3>
+          <h3>{popupEditing ? "Bildanpassning i popupen" : "Bildanpassning i ramen"}</h3>
 
           <div className="placement-actions">
             <button type="button" className="btn btn--primary" onClick={fitFrame}>
@@ -129,7 +135,7 @@ export default function ImageEditPanel({
           </div>
         )}
 
-        {isList && (
+        {!popupEditing && isList && (
           <div className="row-2">
             <button type="button" className="btn btn--outline" onClick={onMoveUp}>
               Flytta upp
@@ -140,12 +146,16 @@ export default function ImageEditPanel({
           </div>
         )}
 
-        <button type="button" className="btn btn--outline btn--block" onClick={onToggleHide}>
-          {hidden ? "Visa på hemsidan" : "Dölj från hemsidan"}
-        </button>
-        <button type="button" className="btn btn--danger-outline btn--block" onClick={onAskDelete}>
-          Ta bort bild
-        </button>
+        {!popupEditing && (
+          <>
+            <button type="button" className="btn btn--outline btn--block" onClick={onToggleHide}>
+              {hidden ? "Visa på hemsidan" : "Dölj från hemsidan"}
+            </button>
+            <button type="button" className="btn btn--danger-outline btn--block" onClick={onAskDelete}>
+              Ta bort bild
+            </button>
+          </>
+        )}
 
         <div className="row-2" style={{ marginTop: 8 }}>
           <button

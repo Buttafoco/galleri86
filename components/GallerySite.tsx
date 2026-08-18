@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import type { ItemRef, SiteContent, SiteMode, TextKey } from "@/lib/types";
+import type { ImageItem, ImageKey, ImagePlacementTarget, ItemRef, SiteContent, SiteMode, TextKey } from "@/lib/types";
 import {
   EditorContext,
   EditorApi,
@@ -23,6 +23,7 @@ import Lightbox from "./Lightbox";
 export interface EditorHandlers {
   openImageEdit: (ref: ItemRef, preview?: ImageEditPreview) => void;
   activeImageRef: ItemRef | null;
+  activePlacementTarget: ImagePlacementTarget | null;
   updateImagePlacement: (patch: ImagePlacementPatch) => void;
   openTextEdit: (key: TextKey) => void;
   openAdd: (section: "artists" | "collage") => void;
@@ -33,10 +34,10 @@ export interface EditorHandlers {
 interface LbState {
   group: "hero" | "artist" | null;
   index: number;
-  single?: LightboxPayload;
+  singleRef?: ItemRef;
 }
 
-const HERO_ORDER: { key: string }[] = [
+const HERO_ORDER: { key: ImageKey }[] = [
   { key: "heroSide" },
   { key: "heroSideExtra" },
   { key: "heroMain" },
@@ -45,20 +46,13 @@ const HERO_ORDER: { key: string }[] = [
   { key: "heroWide" },
 ];
 
-function toPayload(item: {
-  src: string | null;
-  artist: string;
-  year: string;
-  title: string;
-  shortText: string;
-}): LightboxPayload {
-  return {
-    src: item.src,
-    artist: item.artist,
-    year: item.year,
-    title: item.title,
-    shortText: item.shortText,
-  };
+function toPayload(image: ImageItem, refItem: ItemRef): LightboxPayload {
+  return { image, refItem };
+}
+
+function findImage(content: SiteContent, ref: ItemRef): ImageItem | null {
+  if (ref.store === "images") return content.images[ref.key as ImageKey] ?? null;
+  return content[ref.store].find((item) => item.key === ref.key) ?? null;
 }
 
 export default function GallerySite({
@@ -74,11 +68,14 @@ export default function GallerySite({
   const editing = mode === "edit";
 
   const heroGroup = useMemo(
-    () => HERO_ORDER.map(({ key }) => toPayload(content.images[key as keyof typeof content.images])),
+    () => HERO_ORDER.map(({ key }) => toPayload(content.images[key], { store: "images", key })),
     [content],
   );
   const artistGroup = useMemo(
-    () => content.artists.filter((a) => editing || !a.hidden).map(toPayload),
+    () =>
+      content.artists
+        .filter((artist) => editing || !artist.hidden)
+        .map((artist) => toPayload(artist, { store: "artists", key: artist.key })),
     [content, editing],
   );
 
@@ -89,6 +86,7 @@ export default function GallerySite({
       setHover: () => {},
       openImageEdit: handlers?.openImageEdit ?? (() => {}),
       activeImageRef: handlers?.activeImageRef ?? null,
+      activePlacementTarget: handlers?.activePlacementTarget ?? null,
       updateImagePlacement: handlers?.updateImagePlacement ?? (() => {}),
       openTextEdit: handlers?.openTextEdit ?? (() => {}),
       openAdd: handlers?.openAdd ?? (() => {}),
@@ -98,7 +96,7 @@ export default function GallerySite({
         if (payload.group === "hero" || payload.group === "artist") {
           setLb({ group: payload.group, index: payload.index ?? 0 });
         } else {
-          setLb({ group: null, index: 0, single: payload });
+          setLb({ group: null, index: 0, singleRef: payload.refItem });
         }
       },
     }),
@@ -205,8 +203,9 @@ export default function GallerySite({
     } else if (lb.group === "artist") {
       lbItem = artistGroup[lb.index] ?? null;
       hasNav = artistGroup.length > 1;
-    } else {
-      lbItem = lb.single ?? null;
+    } else if (lb.singleRef) {
+      const image = findImage(content, lb.singleRef);
+      lbItem = image ? toPayload(image, lb.singleRef) : null;
     }
   }
   const step = (dir: number) => {

@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import type {
   ArtistItem,
   CollageItem,
+  ImageItem,
+  ImagePlacementTarget,
   ItemRef,
   ScheduleDay,
   SiteContent,
@@ -58,6 +60,26 @@ function applyItemUpdate(
   return { ...content, [ref.store]: arr } as SiteContent;
 }
 
+function imageDraftPatch(image: ImageDraft, target: ImagePlacementTarget): Partial<ImageItem> {
+  const common = {
+    src: image.src,
+    artist: image.artist,
+    title: image.title,
+    year: image.year,
+    shortText: image.shortText,
+  };
+  if (target === "popup") {
+    return {
+      ...common,
+      popupFit: image.fit,
+      popupPositionX: image.positionX,
+      popupPositionY: image.positionY,
+      popupZoom: image.zoom,
+    };
+  }
+  return { ...common, fit: image.fit, positionX: image.positionX, positionY: image.positionY, zoom: image.zoom };
+}
+
 export default function AdminApp({
   initialDraft,
   initialPublished,
@@ -71,6 +93,7 @@ export default function AdminApp({
   const [mode, setMode] = useState<"edit" | "preview">("edit");
 
   const [editingRef, setEditingRef] = useState<ItemRef | null>(null);
+  const [editingPlacementTarget, setEditingPlacementTarget] = useState<ImagePlacementTarget>("frame");
   const [imgDraft, setImgDraft] = useState<ImageDraft>(emptyDraft);
   const [imagePreview, setImagePreview] = useState<ImageEditPreview>({ aspectRatio: 16 / 9, showCaption: false });
   const [uploadingImg, setUploadingImg] = useState(false);
@@ -122,8 +145,10 @@ export default function AdminApp({
       ? draft.images[ref.key as keyof SiteContent["images"]]
       : (draft[ref.store] as Array<ArtistItem | CollageItem>).find((x) => x.key === ref.key);
     if (!item) return;
+    const placementTarget = preview?.placementTarget ?? "frame";
     setEditingRef(ref);
-    setImagePreview(preview ?? { aspectRatio: 16 / 9, showCaption: false });
+    setEditingPlacementTarget(placementTarget);
+    setImagePreview(preview ?? { aspectRatio: 16 / 9, showCaption: false, placementTarget });
     setImgDraft({
       src: item.src,
       artist: item.artist || "",
@@ -131,11 +156,16 @@ export default function AdminApp({
       year: item.year || "",
       shortText: item.shortText || "",
       fit:
-        item.fit ??
-        (ref.store === "images" && (ref.key === "curImg" || ref.key === "curPopupImg") ? "contain" : "cover"),
-      positionX: item.positionX ?? 50,
-      positionY: item.positionY ?? (ref.store === "images" && ref.key === "heroWide" ? 15 : 50),
-      zoom: item.zoom ?? 100,
+        placementTarget === "popup"
+          ? item.popupFit ?? "contain"
+          : item.fit ??
+            (ref.store === "images" && (ref.key === "curImg" || ref.key === "curPopupImg") ? "contain" : "cover"),
+      positionX: placementTarget === "popup" ? item.popupPositionX ?? 50 : item.positionX ?? 50,
+      positionY:
+        placementTarget === "popup"
+          ? item.popupPositionY ?? 50
+          : item.positionY ?? (ref.store === "images" && ref.key === "heroWide" ? 15 : 50),
+      zoom: placementTarget === "popup" ? item.popupZoom ?? 100 : item.zoom ?? 100,
     });
   };
   const setImgField: SetImageDraftField = (field, value) =>
@@ -157,7 +187,7 @@ export default function AdminApp({
   };
   const saveImage = async () => {
     if (!editingRef) return;
-    const next = applyItemUpdate(draft, editingRef, { ...imgDraft });
+    const next = applyItemUpdate(draft, editingRef, imageDraftPatch(imgDraft, editingPlacementTarget));
     setEditingRef(null);
     try {
       await persistDraft(next);
@@ -358,6 +388,7 @@ export default function AdminApp({
   };
   const closePanels = () => {
     setEditingRef(null);
+    setEditingPlacementTarget("frame");
     setEditingText(null);
     setAddSection(null);
     setEditingSchedule(false);
@@ -411,7 +442,9 @@ export default function AdminApp({
 
   const editing = mode === "edit";
   const editingItem = editingRef ? findItem(editingRef) : null;
-  const renderedContent = editingRef ? applyItemUpdate(draft, editingRef, { ...imgDraft }) : draft;
+  const renderedContent = editingRef
+    ? applyItemUpdate(draft, editingRef, imageDraftPatch(imgDraft, editingPlacementTarget))
+    : draft;
   void published; // kept for the "Publicerad"/dirty status text in the preview toolbar
 
   return (
@@ -432,6 +465,7 @@ export default function AdminApp({
         handlers={{
           openImageEdit,
           activeImageRef: editingRef,
+          activePlacementTarget: editingRef ? editingPlacementTarget : null,
           updateImagePlacement,
           openTextEdit,
           openAdd,
@@ -449,7 +483,8 @@ export default function AdminApp({
           onFile={onImgFile}
           uploading={uploadingImg}
           preview={imagePreview}
-          isList={editingRef.store !== "images"}
+          placementTarget={editingPlacementTarget}
+          isList={editingPlacementTarget === "frame" && editingRef.store !== "images"}
           hidden={!!editingItem?.hidden}
           onMoveUp={() => move(-1)}
           onMoveDown={() => move(1)}
