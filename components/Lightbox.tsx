@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
-import type { LightboxPayload } from "./EditorContext";
+import { useEffect, type CSSProperties } from "react";
+import { useEditor, type LightboxPayload } from "./EditorContext";
+import Slot from "./Slot";
 
 interface LightboxProps {
   item: LightboxPayload;
@@ -12,6 +13,10 @@ interface LightboxProps {
 }
 
 export default function Lightbox({ item, hasNav, onClose, onPrev, onNext }: LightboxProps) {
+  const { mode } = useEditor();
+  const editing = mode === "edit";
+  const { image, refItem } = item;
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -27,6 +32,12 @@ export default function Lightbox({ item, hasNav, onClose, onPrev, onNext }: Ligh
     };
   }, [hasNav, onClose, onPrev, onNext]);
 
+  const imageStyle: CSSProperties = {
+    objectFit: image.popupFit ?? "contain",
+    objectPosition: `${image.popupPositionX ?? 50}% ${image.popupPositionY ?? 50}%`,
+    transform: `scale(${(image.popupZoom ?? 100) / 100})`,
+  };
+
   return (
     <>
       <div className="lightbox-back" onClick={onClose} aria-hidden="true" />
@@ -40,14 +51,31 @@ export default function Lightbox({ item, hasNav, onClose, onPrev, onNext }: Ligh
           ›
         </button>
       )}
-      <button type="button" className="lb-fig" onClick={onClose} aria-label="Stäng förstoring">
-        {item.src && <img src={item.src} alt={item.artist || "Konstverk"} />}
-      </button>
+      {editing ? (
+        <div className="lb-fig lb-fig--editing" role="dialog" aria-label="Anpassa bild i popup">
+          <Slot
+            item={image}
+            refItem={refItem}
+            extraClass="lb-popup-slot"
+            style={{ position: "absolute", inset: 0 }}
+            placementTarget="popup"
+            editLabel="Anpassa popupbild"
+            disableLightbox
+          />
+          <button type="button" className="lb-edit-close" aria-label="Stäng popup" onClick={onClose}>
+            ×
+          </button>
+        </div>
+      ) : (
+        <button type="button" className="lb-fig" onClick={onClose} aria-label="Stäng förstoring">
+          {image.src && <img src={image.src} alt={image.artist || "Konstverk"} style={imageStyle} />}
+        </button>
+      )}
       <div className="lb-meta">
-        {item.artist && <div className="a">{item.artist}</div>}
-        {item.year && <div className="y">{item.year}</div>}
-        {item.title && <div className="t">{item.title}</div>}
-        {item.shortText && <div className="st">{item.shortText}</div>}
+        {image.artist && <div className="a">{image.artist}</div>}
+        {image.year && <div className="y">{image.year}</div>}
+        {image.title && <div className="t">{image.title}</div>}
+        {image.shortText && <div className="st">{image.shortText}</div>}
       </div>
     </>
   );

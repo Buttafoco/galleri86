@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from "react";
-import type { ImageItem, ItemRef } from "@/lib/types";
+import type { ImageItem, ImagePlacementTarget, ItemRef } from "@/lib/types";
 import { useEditor } from "./EditorContext";
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
@@ -22,6 +22,10 @@ interface SlotProps {
   index?: number;
   /** Keep the image editable without opening the regular lightbox. */
   disableLightbox?: boolean;
+  /** Whether the controls edit the on-page frame or the popup/lightbox placement. */
+  placementTarget?: ImagePlacementTarget;
+  /** Optional label for the edit button in specialized frames. */
+  editLabel?: string;
 }
 
 export default function Slot({
@@ -34,11 +38,16 @@ export default function Slot({
   group = null,
   index,
   disableLightbox = false,
+  placementTarget = "frame",
+  editLabel = "Redigera bild",
 }: SlotProps) {
-  const { mode, openLightbox, openImageEdit, activeImageRef, updateImagePlacement } = useEditor();
+  const { mode, openLightbox, openImageEdit, activeImageRef, activePlacementTarget, updateImagePlacement } = useEditor();
   const editing = mode === "edit";
   const active =
-    editing && activeImageRef?.store === refItem.store && activeImageRef.key === refItem.key;
+    editing &&
+    activePlacementTarget === placementTarget &&
+    activeImageRef?.store === refItem.store &&
+    activeImageRef.key === refItem.key;
   const slotRef = useRef<HTMLDivElement>(null);
   const [frameSize, setFrameSize] = useState<{ width: number; height: number } | null>(null);
   const moveStart = useRef<{ pointerId: number; x: number; y: number; positionX: number; positionY: number } | null>(null);
@@ -77,22 +86,24 @@ export default function Slot({
 
   const open = () =>
     openLightbox({
-      src: item.src,
-      artist: item.artist,
-      year: item.year,
-      title: item.title,
-      shortText: item.shortText,
+      image: item,
+      refItem,
       group,
       index,
     });
 
+  const popupPlacement = placementTarget === "popup";
+  const currentFit = popupPlacement ? item.popupFit ?? "contain" : item.fit;
+  const currentPositionX = popupPlacement ? item.popupPositionX ?? 50 : item.positionX ?? 50;
+  const currentPositionY = popupPlacement ? item.popupPositionY ?? 50 : item.positionY ?? 50;
+  const currentZoom = popupPlacement ? item.popupZoom ?? 100 : item.zoom ?? 100;
   const imageStyle: CSSProperties = {};
-  if (item.fit) imageStyle.objectFit = item.fit;
-  if (typeof item.positionX === "number" || typeof item.positionY === "number") {
-    imageStyle.objectPosition = `${item.positionX ?? 50}% ${item.positionY ?? 50}%`;
+  if (currentFit) imageStyle.objectFit = currentFit;
+  if (popupPlacement || typeof item.positionX === "number" || typeof item.positionY === "number") {
+    imageStyle.objectPosition = `${currentPositionX}% ${currentPositionY}%`;
   }
-  if (typeof item.zoom === "number") {
-    imageStyle.transform = `translate(-50%, -50%) scale(${item.zoom / 100})`;
+  if (popupPlacement || typeof item.zoom === "number") {
+    imageStyle.transform = `translate(-50%, -50%) scale(${currentZoom / 100})`;
   }
 
   const startMove = (event: PointerEvent<HTMLDivElement>) => {
@@ -102,8 +113,8 @@ export default function Slot({
       pointerId: event.pointerId,
       x: event.clientX,
       y: event.clientY,
-      positionX: item.positionX ?? 50,
-      positionY: item.positionY ?? 50,
+      positionX: currentPositionX,
+      positionY: currentPositionY,
     };
     updateImagePlacement({ fit: "cover" });
   };
@@ -133,7 +144,7 @@ export default function Slot({
       pointerId: event.pointerId,
       x: event.clientX,
       y: event.clientY,
-      zoom: item.zoom ?? 100,
+      zoom: currentZoom,
     };
     updateImagePlacement({ fit: "cover" });
   };
@@ -156,8 +167,8 @@ export default function Slot({
 
   const moveWithKeyboard = (event: KeyboardEvent<HTMLDivElement>) => {
     const step = event.shiftKey ? 10 : 2;
-    const currentX = item.positionX ?? 50;
-    const currentY = item.positionY ?? 50;
+    const currentX = currentPositionX;
+    const currentY = currentPositionY;
     const positions: Record<string, { positionX?: number; positionY?: number }> = {
       ArrowLeft: { positionX: clamp(currentX - step, 0, 100) },
       ArrowRight: { positionX: clamp(currentX + step, 0, 100) },
@@ -204,10 +215,11 @@ export default function Slot({
             openImageEdit(refItem, {
               aspectRatio: frame && frame.height > 0 ? frame.width / frame.height : 16 / 9,
               showCaption,
+              placementTarget,
             });
           }}
         >
-          Redigera bild
+          {editLabel}
         </button>
       )}
 

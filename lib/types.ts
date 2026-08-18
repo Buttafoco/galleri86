@@ -3,6 +3,7 @@
 
 export type TileSize = "small" | "medium" | "large";
 export type ImageFit = "cover" | "contain";
+export type ImagePlacementTarget = "frame" | "popup";
 
 /** One artwork/image anywhere on the site. */
 export interface ImageItem {
@@ -22,6 +23,11 @@ export interface ImageItem {
   positionY?: number;
   /** Zoom inside the frame, where 100 is the natural fitted size. */
   zoom?: number;
+  /** Independent fitting used when the image is opened in the popup/lightbox. */
+  popupFit?: ImageFit;
+  popupPositionX?: number;
+  popupPositionY?: number;
+  popupZoom?: number;
 }
 
 /** Fixed single-placement images, addressed by a stable key. */
