@@ -20,6 +20,8 @@ interface SlotProps {
   /** Lightbox prev/next group. */
   group?: "hero" | "artist" | null;
   index?: number;
+  /** Keep the image editable without opening the regular lightbox. */
+  disableLightbox?: boolean;
 }
 
 export default function Slot({
@@ -31,6 +33,7 @@ export default function Slot({
   showCaption = false,
   group = null,
   index,
+  disableLightbox = false,
 }: SlotProps) {
   const { mode, openLightbox, openImageEdit, activeImageRef, updateImagePlacement } = useEditor();
   const editing = mode === "edit";
@@ -182,7 +185,7 @@ export default function Slot({
         </div>
       )}
 
-      {!active && (
+      {!active && !disableLightbox && (
         <button
           type="button"
           className="slot-open"
