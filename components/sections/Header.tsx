@@ -31,7 +31,16 @@ export default function Header({ variant }: { variant: "public" | "admin" | "pag
         {NAV.map((n) => {
           const href = n.href.startsWith("#") && !hasHomeSections ? `/${n.href}` : n.href;
           return (
-            <a key={n.href} href={href} style={{ opacity: 0.85 }}>
+            <a
+              key={n.href}
+              href={href}
+              onClick={
+                n.href === "#galleriet" && hasHomeSections
+                  ? () => window.dispatchEvent(new Event("galleri86:open-gallery"))
+                  : undefined
+              }
+              style={{ opacity: 0.85 }}
+            >
               {n.label}
             </a>
           );
