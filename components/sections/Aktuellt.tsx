@@ -50,12 +50,11 @@ export default function Aktuellt({ content }: { content: SiteContent }) {
 
   return (
     <section
-      id="aktuellt"
       className="section-pad"
       style={{ position: "relative", padding: "140px 48px", maxWidth: 1440, margin: "0 auto" }}
     >
       <SectionTag label="Aktuellt" />
-      <h2 style={{ ...eyebrowLabelStyle, margin: "0 0 56px" }}>Aktuellt</h2>
+      <h2 id="aktuellt" style={{ ...eyebrowLabelStyle, margin: "0 0 56px" }}>Aktuellt</h2>
 
       {/* Nästa utställning — clearly emphasized */}
       <div
