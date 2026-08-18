@@ -150,6 +150,14 @@ export default function Aktuellt({ content }: { content: SiteContent }) {
                   type="button"
                   className="btn--link"
                   style={{ fontSize: 13, padding: 0 }}
+                  onClick={() => setShowModal(true)}
+                >
+                  Anpassa bilden i popupen
+                </button>
+                <button
+                  type="button"
+                  className="btn--link"
+                  style={{ fontSize: 13, padding: 0 }}
                   onClick={() => openTextEdit("curLongDesc")}
                 >
                   Redigera längre beskrivning

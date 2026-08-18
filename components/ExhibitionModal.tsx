@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, type CSSProperties } from "react";
 import type { ImageItem } from "@/lib/types";
+import { useEditor } from "./EditorContext";
+import Slot from "./Slot";
 
 interface ExhibitionModalProps {
   image: ImageItem;
@@ -22,6 +24,8 @@ export default function ExhibitionModal({
   description,
   onClose,
 }: ExhibitionModalProps) {
+  const { mode } = useEditor();
+  const editing = mode === "edit";
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
 
@@ -78,8 +82,16 @@ export default function ExhibitionModal({
         <button type="button" ref={closeRef} className="exhibit-modal-close" aria-label="Stäng" onClick={onClose}>
           ×
         </button>
-        <div className="exhibit-modal-img">
-          {image.src ? (
+        <div className={`exhibit-modal-img${editing ? " exhibit-modal-img--editable" : ""}`}>
+          {editing ? (
+            <Slot
+              item={image}
+              refItem={{ store: "images", key: "curPopupImg" }}
+              extraClass="exhibit-modal-popup-slot"
+              style={{ position: "absolute", inset: 0 }}
+              disableLightbox
+            />
+          ) : image.src ? (
             <img src={image.src} alt={image.alt || artist || "Utställningsbild"} style={imageStyle} />
           ) : (
             <div className="slot-empty" aria-hidden="true" />
