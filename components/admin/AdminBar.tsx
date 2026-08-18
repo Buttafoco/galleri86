@@ -2,12 +2,16 @@
 
 export default function AdminBar({
   dirty,
+  publishing,
   onPreview,
   onPublish,
+  onLogout,
 }: {
   dirty: boolean;
+  publishing: boolean;
   onPreview: () => void;
   onPublish: () => void;
+  onLogout: () => void;
 }) {
   return (
     <div className="admin-bar">
@@ -26,10 +30,10 @@ export default function AdminBar({
         <button type="button" className="btn btn--ghost-light" onClick={onPreview}>
           Förhandsgranska
         </button>
-        <button type="button" className="btn btn--primary" onClick={onPublish}>
-          Publicera ändringar
+        <button type="button" className="btn btn--primary" onClick={onPublish} disabled={publishing}>
+          {publishing ? "Publicerar …" : "Publicera ändringar"}
         </button>
-        <button type="button" className="btn btn--ghost-light" disabled title="Inloggning kopplas senare">
+        <button type="button" className="btn btn--ghost-light" onClick={onLogout}>
           Logga ut
         </button>
       </div>

@@ -8,7 +8,7 @@ import SectionTag from "../SectionTag";
 export default function Galleriet({ content }: { content: SiteContent }) {
   return (
     <section
-      id="galleriet"
+      id="om-galleriet"
       className="section-pad"
       style={{ position: "relative", background: "#111111", color: "#F7F6F2", padding: "140px 48px" }}
     >
@@ -36,6 +36,20 @@ export default function Galleriet({ content }: { content: SiteContent }) {
               {content.texts.spaceP}
             </p>
           </EditText>
+          <div
+            className="accent"
+            style={{
+              borderTop: "1px solid rgba(247,246,242,0.18)",
+              padding: "24px 0",
+              margin: "0 0 40px",
+              maxWidth: 400,
+              fontSize: 14,
+              lineHeight: 1.6,
+              opacity: 0.75,
+            }}
+          >
+            Medlem i SK? Du får <span style={{ fontWeight: 500 }}>10 % rabatt</span>.
+          </div>
           <div style={{ display: "flex", gap: 48, flexWrap: "wrap" }}>
             {[
               ["47 kvm", "Yta"],
@@ -48,6 +62,19 @@ export default function Galleriet({ content }: { content: SiteContent }) {
               </div>
             ))}
           </div>
+          <a
+            href="/kontakt"
+            className="link-onDark"
+            style={{
+              display: "inline-block",
+              marginTop: 40,
+              fontSize: 14,
+              borderBottom: "1px solid rgba(247,246,242,0.35)",
+              paddingBottom: 3,
+            }}
+          >
+            Kontakta oss →
+          </a>
         </div>
       </div>
     </section>

@@ -1,6 +1,11 @@
 import GallerySite from "@/components/GallerySite";
-import { publishedContent } from "@/lib/content";
+import { getPublishedContent } from "@/lib/content-store";
 
-export default function HomePage() {
-  return <GallerySite content={publishedContent} mode="public" />;
+// Always read the live published row from Supabase — never a cached/stale
+// build-time snapshot — so publishing from /admin shows up immediately.
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const content = await getPublishedContent();
+  return <GallerySite content={content} mode="public" />;
 }

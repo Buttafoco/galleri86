@@ -1,8 +1,6 @@
 "use client";
 
-import { type ImageDraft, SHORT_TEXT_MAX } from "./types";
-
-type Field = keyof ImageDraft;
+import { type ImageDraft, type SetImageDraftField, SHORT_TEXT_MAX } from "./types";
 
 export default function ImageFields({
   draft,
@@ -10,7 +8,7 @@ export default function ImageFields({
   idPrefix,
 }: {
   draft: ImageDraft;
-  setField: (field: Field, value: string) => void;
+  setField: SetImageDraftField;
   idPrefix: string;
 }) {
   const count = draft.shortText.length;

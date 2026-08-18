@@ -2,7 +2,14 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { ItemRef, SiteContent, SiteMode, TextKey } from "@/lib/types";
-import { EditorContext, EditorApi, LightboxPayload } from "./EditorContext";
+import {
+  EditorContext,
+  EditorApi,
+  ImageEditPreview,
+  ImagePlacementPatch,
+  LightboxPayload,
+} from "./EditorContext";
+import { LOGO_ASPECT, LOGO_SRC } from "@/lib/logo";
 import Header from "./sections/Header";
 import Hero from "./sections/Hero";
 import Aktuellt from "./sections/Aktuellt";
@@ -14,10 +21,13 @@ import Footer from "./sections/Footer";
 import Lightbox from "./Lightbox";
 
 export interface EditorHandlers {
-  openImageEdit: (ref: ItemRef) => void;
+  openImageEdit: (ref: ItemRef, preview?: ImageEditPreview) => void;
+  activeImageRef: ItemRef | null;
+  updateImagePlacement: (patch: ImagePlacementPatch) => void;
   openTextEdit: (key: TextKey) => void;
   openAdd: (section: "artists" | "collage") => void;
   openScheduleEdit: () => void;
+  openUpcomingEdit: () => void;
 }
 
 interface LbState {
@@ -78,9 +88,12 @@ export default function GallerySite({
       hoverKey: null,
       setHover: () => {},
       openImageEdit: handlers?.openImageEdit ?? (() => {}),
+      activeImageRef: handlers?.activeImageRef ?? null,
+      updateImagePlacement: handlers?.updateImagePlacement ?? (() => {}),
       openTextEdit: handlers?.openTextEdit ?? (() => {}),
       openAdd: handlers?.openAdd ?? (() => {}),
       openScheduleEdit: handlers?.openScheduleEdit ?? (() => {}),
+      openUpcomingEdit: handlers?.openUpcomingEdit ?? (() => {}),
       openLightbox: (payload: LightboxPayload) => {
         if (payload.group === "hero" || payload.group === "artist") {
           setLb({ group: payload.group, index: payload.index ?? 0 });
@@ -123,8 +136,10 @@ export default function GallerySite({
     const m: {
       titleTop?: number;
       titleLeft?: number;
+      titleWidth?: number;
       headerTop?: number;
       headerLeft?: number;
+      headerWidth?: number;
       headerMid?: number;
     } = {};
 
@@ -134,8 +149,10 @@ export default function GallerySite({
       const sr = headerSlot.getBoundingClientRect();
       m.titleTop = hr.top + sy;
       m.titleLeft = hr.left;
+      m.titleWidth = hr.width;
       m.headerTop = sr.top;
       m.headerLeft = sr.left;
+      m.headerWidth = sr.width;
       const hb = header.getBoundingClientRect();
       m.headerMid = hb.top + hb.height / 2;
     };
@@ -152,14 +169,15 @@ export default function GallerySite({
       }
       const progress = Math.min(1, (zoneStart - docTop) / zone);
       const p2 = Math.max(0, Math.min(1, (progress - 0.3) / 0.7));
-      const fs = 56 - (56 - 19) * p2;
-      const dockedTop = (m.headerMid as number) - fs * 0.384;
+      const width = (m.titleWidth as number) - ((m.titleWidth as number) - (m.headerWidth as number)) * p2;
+      const height = width * LOGO_ASPECT;
+      const dockedTop = (m.headerMid as number) - height / 2;
       const top = Math.max(docTop, dockedTop);
       const left = (m.titleLeft as number) + ((m.headerLeft as number) - (m.titleLeft as number)) * p2;
       clone.style.display = "block";
       clone.style.top = `${top}px`;
       clone.style.left = `${left}px`;
-      clone.style.fontSize = `${fs}px`;
+      clone.style.width = `${width}px`;
       clone.style.opacity = String(p2);
       heroTitle.style.opacity = String(1 - p2);
     };
@@ -203,9 +221,9 @@ export default function GallerySite({
     <EditorContext.Provider value={api}>
       <div className={`site ${mode === "public" ? "site--public" : "site--admin"}`}>
         {mode === "public" && (
-          <div id="dockClone">
-            Galleri <span className="accent ital">86</span> Stockholm.
-          </div>
+          <a id="dockClone" href="/" aria-label="Gå till startsidan" className="brand-logo-link">
+            <img src={LOGO_SRC} alt="" />
+          </a>
         )}
         <Header variant={mode === "public" ? "public" : "admin"} />
         <Hero content={content} />

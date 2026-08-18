@@ -1,8 +1,12 @@
 "use client";
 
-export default function Toast({ message }: { message: string }) {
+export default function Toast({ message, variant = "success" }: { message: string; variant?: "success" | "error" }) {
   return (
-    <div className="toast" role="status" aria-live="polite">
+    <div
+      className={`toast${variant === "error" ? " toast--error" : ""}`}
+      role="status"
+      aria-live="polite"
+    >
       {message}
     </div>
   );

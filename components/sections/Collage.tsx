@@ -39,7 +39,7 @@ export default function Collage({ content }: { content: SiteContent }) {
   );
 
   return (
-    <>
+    <div id="galleriet">
       <div className="add-inline">
         <h2
           style={{
@@ -113,6 +113,6 @@ export default function Collage({ content }: { content: SiteContent }) {
           </div>
         </>
       )}
-    </>
+    </div>
   );
 }

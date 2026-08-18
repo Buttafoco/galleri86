@@ -1,7 +1,7 @@
 "use client";
 
 import type { ChangeEvent } from "react";
-import { type ImageDraft } from "./types";
+import { type ImageDraft, type SetImageDraftField } from "./types";
 import ImageFields from "./ImageFields";
 
 export default function AddImagePanel({
@@ -9,13 +9,15 @@ export default function AddImagePanel({
   draft,
   setField,
   onFile,
+  uploading,
   onConfirm,
   onClose,
 }: {
   sectionLabel: string;
   draft: ImageDraft;
-  setField: (field: keyof ImageDraft, value: string) => void;
+  setField: SetImageDraftField;
   onFile: (e: ChangeEvent<HTMLInputElement>) => void;
+  uploading: boolean;
   onConfirm: () => void;
   onClose: () => void;
 }) {
@@ -29,9 +31,9 @@ export default function AddImagePanel({
           {draft.src ? <img src={draft.src} alt="Vald bild" /> : <div className="empty">Ingen bild vald ännu</div>}
         </div>
 
-        <label className="file-btn">
-          <input type="file" accept="image/*" onChange={onFile} style={{ display: "none" }} />
-          Välj bild
+        <label className="file-btn" style={{ opacity: uploading ? 0.6 : 1, pointerEvents: uploading ? "none" : "auto" }}>
+          <input type="file" accept="image/*" onChange={onFile} disabled={uploading} style={{ display: "none" }} />
+          {uploading ? "Laddar upp …" : "Välj bild"}
         </label>
 
         <ImageFields draft={draft} setField={setField} idPrefix="add" />
@@ -41,6 +43,7 @@ export default function AddImagePanel({
           className="btn btn--primary btn--block"
           style={{ minHeight: 52, fontSize: 16 }}
           onClick={onConfirm}
+          disabled={uploading}
         >
           Lägg till på hemsidan
         </button>

@@ -1,6 +1,10 @@
 .DS_Store
 .claude/
 
+# environment variables (Supabase credentials etc.)
+.env
+.env*.local
+
 # dependencies
 /node_modules
 

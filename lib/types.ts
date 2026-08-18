@@ -2,6 +2,7 @@
 // The same shape backs both the published state and the editable draft state.
 
 export type TileSize = "small" | "medium" | "large";
+export type ImageFit = "cover" | "contain";
 
 /** One artwork/image anywhere on the site. */
 export interface ImageItem {
@@ -14,6 +15,13 @@ export interface ImageItem {
   size: TileSize;
   /** Accessible alt text for the public site. */
   alt?: string;
+  /** How the image is fitted inside its fixed frame. */
+  fit?: ImageFit;
+  /** Horizontal and vertical focal point, expressed as percentages. */
+  positionX?: number;
+  positionY?: number;
+  /** Zoom inside the frame, where 100 is the natural fitted size. */
+  zoom?: number;
 }
 
 /** Fixed single-placement images, addressed by a stable key. */
@@ -25,12 +33,20 @@ export type ImageKey =
   | "heroSideExtra"
   | "heroWide"
   | "curImg"
+  | "curPopupImg"
   | "spaceImg";
 
 export type ImageMap = Record<ImageKey, ImageItem>;
 
 /** An artist card in the "Utställningar" grid. */
 export interface ArtistItem extends ImageItem {
+  key: string;
+  name: string;
+  date: string;
+}
+
+/** One text-only entry in the "Kommande utställningar" list. */
+export interface UpcomingExhibition {
   key: string;
   name: string;
   date: string;
@@ -49,6 +65,8 @@ export interface SiteTexts {
   curTitle: string;
   curSub: string;
   curDesc: string;
+  /** Longer editorial description shown in the exhibition detail popup. */
+  curLongDesc: string;
   spaceH: string;
   spaceP: string;
 }
@@ -81,6 +99,7 @@ export interface ScheduleDay {
 export interface SiteContent {
   images: ImageMap;
   artists: ArtistItem[];
+  upcomingExhibitions: UpcomingExhibition[];
   collage: CollageItem[];
   texts: SiteTexts;
   schedule: ScheduleDay[];

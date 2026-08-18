@@ -4,6 +4,8 @@ import type { SiteContent } from "@/lib/types";
 import Slot from "../Slot";
 import EditText from "../EditText";
 import SectionTag from "../SectionTag";
+import { LOGO_ALT, LOGO_SRC } from "@/lib/logo";
+import { EXTERNAL_LINK_PROPS, FACEBOOK_URL, INSTAGRAM_URL } from "@/lib/social";
 
 export default function Hero({ content }: { content: SiteContent }) {
   const img = content.images;
@@ -22,20 +24,21 @@ export default function Hero({ content }: { content: SiteContent }) {
           opacity: 0.55,
         }}
       >
-        <a href="#" style={{ color: "#111111" }}>Instagram</a>
-        <a href="#" style={{ color: "#111111" }}>Facebook</a>
+        <a href={INSTAGRAM_URL} {...EXTERNAL_LINK_PROPS} style={{ color: "#111111" }}>
+          Instagram
+        </a>
+        <a href={FACEBOOK_URL} {...EXTERNAL_LINK_PROPS} style={{ color: "#111111" }}>
+          Facebook
+        </a>
       </div>
 
       <div>
-        <h1
+        <img
           id="heroTitle"
-          className="serif"
-          style={{ margin: "0 0 24px", fontSize: 56, lineHeight: 1.05, fontWeight: 400 }}
-        >
-          Galleri <span className="accent ital">86</span>
-          <br />
-          Stockholm.
-        </h1>
+          src={LOGO_SRC}
+          alt={LOGO_ALT}
+          style={{ display: "block", width: "100%", height: "auto", objectFit: "contain", margin: "0 0 24px" }}
+        />
         <p
           className="serif ital"
           style={{ fontSize: 22, lineHeight: 1.35, margin: "0 0 22px", maxWidth: 340 }}
