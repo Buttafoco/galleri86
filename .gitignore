@@ -1,2 +1,24 @@
 .DS_Store
 .claude/
+
+# environment variables (Supabase credentials etc.)
+.env
+.env*.local
+
+# dependencies
+/node_modules
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+*.pem
+npm-debug.log*
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
