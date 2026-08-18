@@ -12,9 +12,10 @@ export default function Utstallningar({ content }: { content: SiteContent }) {
   const visibleArtists = content.artists.filter((a) => editing || !a.hidden);
 
   return (
-    <section id="utstallningar" className="section-pad" style={{ position: "relative", padding: "40px 48px 140px", maxWidth: 1440, margin: "0 auto" }}>
+    <section className="section-pad" style={{ position: "relative", padding: "40px 48px 140px", maxWidth: 1440, margin: "0 auto" }}>
       <SectionTag label="Utställningar" />
       <h2
+        id="utstallningar"
         style={{
           fontSize: 13,
           letterSpacing: "0.14em",

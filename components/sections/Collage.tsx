@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { SiteContent } from "@/lib/types";
 import Slot from "../Slot";
 import { useEditor } from "../EditorContext";
@@ -11,6 +11,22 @@ export default function Collage({ content }: { content: SiteContent }) {
   const [open, setOpen] = useState(false);
 
   const visible = content.collage.filter((c) => editing || !c.hidden);
+
+  useEffect(() => {
+    const openGallery = () => setOpen(true);
+    const openGalleryFromHash = () => {
+      if (window.location.hash === "#galleriet") openGallery();
+    };
+
+    openGalleryFromHash();
+    window.addEventListener("hashchange", openGalleryFromHash);
+    window.addEventListener("galleri86:open-gallery", openGallery);
+
+    return () => {
+      window.removeEventListener("hashchange", openGalleryFromHash);
+      window.removeEventListener("galleri86:open-gallery", openGallery);
+    };
+  }, []);
 
   const grid = (
     <div
@@ -39,9 +55,10 @@ export default function Collage({ content }: { content: SiteContent }) {
   );
 
   return (
-    <div id="galleriet">
+    <div>
       <div className="add-inline">
         <h2
+          id="galleriet"
           style={{
             fontSize: 13,
             letterSpacing: "0.14em",
