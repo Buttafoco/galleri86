@@ -41,6 +41,26 @@ function summarizeHours(schedule: SiteContent["schedule"]): string {
     .join(" · ");
 }
 
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+
+function formatDatePart(iso: string): string {
+  const [, month, day] = iso.split("-");
+  return `${Number(day)}/${Number(month)}`;
+}
+
+/** Renders a stored range ("2026-08-19 - 2026-08-24", from the admin's date
+ * pickers) as "19/8 - 24/8". Older free-text entries ("Vår 2027") aren't ISO
+ * dates, so they fall through unchanged. */
+function formatDateRange(date: string): string {
+  const idx = date.indexOf(" - ");
+  const from = idx === -1 ? date : date.slice(0, idx);
+  const to = idx === -1 ? "" : date.slice(idx + 3);
+  if (!ISO_DATE.test(from)) return date;
+  if (!to) return formatDatePart(from);
+  if (!ISO_DATE.test(to)) return date;
+  return `${formatDatePart(from)} - ${formatDatePart(to)}`;
+}
+
 export default function Aktuellt({ content }: { content: SiteContent }) {
   const { mode, openTextEdit, openUpcomingEdit } = useEditor();
   const editing = mode === "edit";
@@ -117,7 +137,14 @@ export default function Aktuellt({ content }: { content: SiteContent }) {
           <EditText textKey="curDesc">
             <p
               className="reveal reveal-d4"
-              style={{ fontSize: 15, lineHeight: 1.7, maxWidth: 380, opacity: 0.85, margin: "0 0 26px" }}
+              style={{
+                fontSize: 15,
+                lineHeight: 1.7,
+                maxWidth: 380,
+                opacity: 0.85,
+                margin: "0 0 26px",
+                whiteSpace: "pre-line",
+              }}
             >
               {content.texts.curDesc || "Mer information om utställningen kommer inom kort."}
             </p>
@@ -205,7 +232,7 @@ export default function Aktuellt({ content }: { content: SiteContent }) {
                 <div className="serif ital" style={{ fontSize: 20, fontWeight: 500 }}>
                   {a.name || "Konstnär meddelas snart"}
                 </div>
-                <div style={{ fontSize: 13, opacity: 0.5 }}>{a.date || "Datum meddelas snart"}</div>
+                <div style={{ fontSize: 13, opacity: 0.5 }}>{formatDateRange(a.date) || "Datum meddelas snart"}</div>
               </div>
             ))}
           </div>

@@ -43,11 +43,20 @@ export default function Hero({ content }: { content: SiteContent }) {
           className="serif ital"
           style={{ fontSize: 22, lineHeight: 1.35, margin: "0 0 22px", maxWidth: 340 }}
         >
-          Ett litet, familjedrivet galleri på Skånegatan 86 — en personlig och välkomnande plats för
+          Ett litet, familjärt galleri på Skånegatan 86 — en personlig och välkomnande plats för
           konst och möten.
         </p>
         <EditText textKey="intro">
-          <p style={{ fontSize: 14, lineHeight: 1.75, maxWidth: 320, margin: 0, opacity: 0.7 }}>
+          <p
+            style={{
+              fontSize: 14,
+              lineHeight: 1.75,
+              maxWidth: 320,
+              margin: 0,
+              opacity: 0.7,
+              whiteSpace: "pre-line",
+            }}
+          >
             {content.texts.intro}
           </p>
         </EditText>
