@@ -315,6 +315,8 @@ header.top nav a { opacity: 0.85; }
 .panel-intro { margin: -8px 0 4px; color: #6b6259; font-size: 14px; line-height: 1.5; }
 .upcoming-editor-row { border: 1px solid #e3ddd0; border-radius: 10px; padding: 16px;
   display: flex; flex-direction: column; gap: 14px; }
+.upcoming-date-range { display: flex; gap: 14px; }
+.upcoming-date-range > div { flex: 1; min-width: 0; }
 .upcoming-remove { color: #a13e3e; }
 .upcoming-empty { margin: 0; padding: 22px; border: 1px dashed #cabfaf; border-radius: 10px;
   color: #8a8074; text-align: center; font-size: 14px; font-style: italic; }

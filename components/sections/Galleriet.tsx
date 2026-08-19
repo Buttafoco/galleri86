@@ -24,33 +24,9 @@ export default function Galleriet({ content }: { content: SiteContent }) {
           margin: "0 auto",
         }}
       >
-        <Slot item={content.images.spaceImg} refItem={{ store: "images", key: "spaceImg" }} style={{ height: 560 }} />
         <div>
-          <EditText textKey="spaceH">
-            <h2 style={{ margin: "0 0 20px", fontSize: 30, fontWeight: 500, lineHeight: 1.25 }}>
-              {content.texts.spaceH}
-            </h2>
-          </EditText>
-          <EditText textKey="spaceP">
-            <p style={{ fontSize: 15, lineHeight: 1.75, opacity: 0.8, maxWidth: 400, margin: "0 0 40px" }}>
-              {content.texts.spaceP}
-            </p>
-          </EditText>
-          <div
-            className="accent"
-            style={{
-              borderTop: "1px solid rgba(247,246,242,0.18)",
-              padding: "24px 0",
-              margin: "0 0 40px",
-              maxWidth: 400,
-              fontSize: 14,
-              lineHeight: 1.6,
-              opacity: 0.75,
-            }}
-          >
-            Medlem i SK? Du får <span style={{ fontWeight: 500 }}>10 % rabatt</span>.
-          </div>
-          <div style={{ display: "flex", gap: 48, flexWrap: "wrap" }}>
+          <Slot item={content.images.spaceImg} refItem={{ store: "images", key: "spaceImg" }} style={{ height: 560 }} />
+          <div style={{ display: "flex", gap: 48, flexWrap: "wrap", marginTop: 32 }}>
             {[
               ["47 kvm", "Yta"],
               ["Tre rum", "Planlösning"],
@@ -62,12 +38,47 @@ export default function Galleriet({ content }: { content: SiteContent }) {
               </div>
             ))}
           </div>
+        </div>
+        <div>
+          <EditText textKey="spaceH">
+            <h2 style={{ margin: "0 0 20px", fontSize: 30, fontWeight: 500, lineHeight: 1.25 }}>
+              {content.texts.spaceH}
+            </h2>
+          </EditText>
+          <EditText textKey="spaceP">
+            <p
+              style={{
+                fontSize: 15,
+                lineHeight: 1.75,
+                opacity: 0.8,
+                maxWidth: 400,
+                margin: "0 0 40px",
+                whiteSpace: "pre-line",
+              }}
+            >
+              {content.texts.spaceP}
+            </p>
+          </EditText>
+          <div
+            className="accent"
+            style={{
+              borderTop: "1px solid rgba(247,246,242,0.18)",
+              padding: "24px 0",
+              margin: "0 0 16px",
+              maxWidth: 400,
+              fontSize: 14,
+              lineHeight: 1.6,
+              opacity: 0.75,
+            }}
+          >
+            Medlem i SK? Du får <span style={{ fontWeight: 500 }}>10 % rabatt</span>.
+          </div>
           <a
             href="/kontakt"
             className="link-onDark"
             style={{
               display: "inline-block",
-              marginTop: 40,
+              marginTop: 0,
               fontSize: 14,
               borderBottom: "1px solid rgba(247,246,242,0.35)",
               paddingBottom: 3,
