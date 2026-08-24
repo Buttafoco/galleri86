@@ -74,11 +74,11 @@ export default function Aktuellt({ content }: { content: SiteContent }) {
       style={{ position: "relative", padding: "140px 48px", maxWidth: 1440, margin: "0 auto" }}
     >
       <SectionTag label="Aktuellt" />
-      <h2 id="aktuellt" style={{ ...eyebrowLabelStyle, margin: "0 0 56px" }}>Aktuellt</h2>
+      <h2 id="aktuellt" className="aktuellt-title" style={{ ...eyebrowLabelStyle, margin: "0 0 56px" }}>Aktuellt</h2>
 
       {/* Nästa utställning — clearly emphasized */}
       <div
-        className="grid-2"
+        className="grid-2 aktuellt-grid"
         style={{
           display: "grid",
           gridTemplateColumns: "minmax(0,1.4fr) minmax(0,1fr)",

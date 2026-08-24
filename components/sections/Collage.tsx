@@ -30,6 +30,7 @@ export default function Collage({ content }: { content: SiteContent }) {
 
   const grid = (
     <div
+      className="collage-grid"
       style={{
         display: "grid",
         gridTemplateColumns: "repeat(4,minmax(0,1fr))",
@@ -41,7 +42,7 @@ export default function Collage({ content }: { content: SiteContent }) {
       {visible.map((c) => (
         <div
           key={c.key}
-          className="slot-cell"
+          className="slot-cell collage-cell"
           style={{ gridColumn: c.kind === "wide" ? "span 2" : "span 1", position: "relative" }}
         >
           <Slot

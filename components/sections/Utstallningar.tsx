@@ -27,13 +27,14 @@ export default function Utstallningar({ content }: { content: SiteContent }) {
       >
         Utställningar
       </h2>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: "64px 48px" }}>
+      <div className="artists-grid" style={{ display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: "64px 48px" }}>
         {visibleArtists.map((a, i) => (
           <div className="artist-card" key={a.key}>
             <Slot
               item={a}
               refItem={{ store: "artists", key: a.key }}
               style={{ height: 520, marginBottom: 18 }}
+              extraClass="mob-square"
               group="artist"
               index={i}
             />
