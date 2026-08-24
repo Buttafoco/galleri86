@@ -220,8 +220,8 @@ header.top.menu-open { z-index: 950; }
   #om-galleriet .mob-square img { object-position: 15% 50% !important; }
 
   /* Aktuellt: pull the heading and the "Nästa utställning" copy closer to the image */
-  .aktuellt-title { margin-bottom: 24px !important; }
-  .grid-2.aktuellt-grid { gap: 20px !important; }
+  .aktuellt-title { margin-bottom: 12px !important; }
+  .grid-2.aktuellt-grid { gap: 12px !important; }
   .collage-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; grid-auto-rows: unset !important; gap: 12px !important; }
   .collage-cell { grid-column: span 1 !important; aspect-ratio: 1 / 1 !important; }
   .artists-grid { gap: 12px !important; }
