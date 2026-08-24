@@ -41,6 +41,12 @@ export default function Lightbox({ item, hasNav, onClose, onPrev, onNext }: Ligh
   return (
     <>
       <div className="lightbox-back" onClick={onClose} aria-hidden="true" />
+      {!editing && (
+        <button type="button" className="lb-close" aria-label="Stäng förstoring" onClick={onClose}>
+          <span className="lb-close__bar" aria-hidden="true" />
+          <span className="lb-close__bar" aria-hidden="true" />
+        </button>
+      )}
       {hasNav && (
         <button type="button" className="lb-nav prev" aria-label="Föregående bild" onClick={onPrev}>
           ‹
@@ -67,9 +73,9 @@ export default function Lightbox({ item, hasNav, onClose, onPrev, onNext }: Ligh
           </button>
         </div>
       ) : (
-        <button type="button" className="lb-fig" onClick={onClose} aria-label="Stäng förstoring">
+        <div className="lb-fig" onClick={onClose}>
           {image.src && <img src={image.src} alt={image.artist || "Konstverk"} style={imageStyle} />}
-        </button>
+        </div>
       )}
       <div className="lb-meta">
         {image.artist && <div className="a">{image.artist}</div>}

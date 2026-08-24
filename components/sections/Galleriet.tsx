@@ -25,7 +25,12 @@ export default function Galleriet({ content }: { content: SiteContent }) {
         }}
       >
         <div>
-          <Slot item={content.images.spaceImg} refItem={{ store: "images", key: "spaceImg" }} style={{ height: 560 }} />
+          <Slot
+            item={content.images.spaceImg}
+            refItem={{ store: "images", key: "spaceImg" }}
+            style={{ height: 560 }}
+            extraClass="mob-square"
+          />
           <div style={{ display: "flex", gap: 48, flexWrap: "wrap", marginTop: 32 }}>
             {[
               ["47 kvm", "Yta"],

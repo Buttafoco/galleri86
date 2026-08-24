@@ -64,7 +64,7 @@ export default function Hero({ content }: { content: SiteContent }) {
           Utställningar <span />
         </a>
 
-        <div style={{ marginTop: 56, height: 300, width: "100%", position: "relative" }}>
+        <div className="mob-square" style={{ marginTop: 56, height: 300, width: "100%", position: "relative" }}>
           <Slot
             item={img.heroSide}
             refItem={{ store: "images", key: "heroSide" }}
@@ -74,7 +74,7 @@ export default function Hero({ content }: { content: SiteContent }) {
             index={0}
           />
         </div>
-        <div style={{ marginTop: 24, height: 300, width: "100%", position: "relative" }}>
+        <div className="mob-square" style={{ marginTop: 24, height: 300, width: "100%", position: "relative" }}>
           <Slot
             item={img.heroSideExtra}
             refItem={{ store: "images", key: "heroSideExtra" }}
@@ -101,6 +101,7 @@ export default function Hero({ content }: { content: SiteContent }) {
           item={img.heroMain}
           refItem={{ store: "images", key: "heroMain" }}
           style={{ height: 620 }}
+          extraClass="mob-square"
           showCaption
           group="hero"
           index={2}
@@ -110,6 +111,7 @@ export default function Hero({ content }: { content: SiteContent }) {
             item={img.heroC1}
             refItem={{ store: "images", key: "heroC1" }}
             style={{ height: 298 }}
+            extraClass="mob-square"
             revealDelay={1}
             showCaption
             group="hero"
@@ -119,6 +121,7 @@ export default function Hero({ content }: { content: SiteContent }) {
             item={img.heroC2}
             refItem={{ store: "images", key: "heroC2" }}
             style={{ height: 298 }}
+            extraClass="mob-square"
             revealDelay={2}
             showCaption
             group="hero"
@@ -129,7 +132,7 @@ export default function Hero({ content }: { content: SiteContent }) {
           <Slot
             item={img.heroWide}
             refItem={{ store: "images", key: "heroWide" }}
-            extraClass="slot--wide"
+            extraClass="slot--wide mob-square"
             style={{ height: 620 }}
             revealDelay={1}
             showCaption
