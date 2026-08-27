@@ -39,13 +39,13 @@ export default function Hero({ content }: { content: SiteContent }) {
           alt={LOGO_ALT}
           style={{ display: "block", width: "100%", height: "auto", objectFit: "contain", margin: "0 0 24px" }}
         />
-        <p
+        <h1
           className="serif ital"
-          style={{ fontSize: 22, lineHeight: 1.35, margin: "0 0 22px", maxWidth: 340 }}
+          style={{ fontSize: 22, fontWeight: "inherit", lineHeight: 1.35, margin: "0 0 22px", maxWidth: 340 }}
         >
           Ett litet, familjärt galleri på Skånegatan 86 — en personlig och välkomnande plats för
           konst och möten.
-        </p>
+        </h1>
         <EditText textKey="intro">
           <p
             style={{
