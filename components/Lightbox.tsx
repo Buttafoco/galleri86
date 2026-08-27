@@ -74,7 +74,9 @@ export default function Lightbox({ item, hasNav, onClose, onPrev, onNext }: Ligh
         </div>
       ) : (
         <div className="lb-fig" onClick={onClose}>
-          {image.src && <img src={image.src} alt={image.artist || "Konstverk"} style={imageStyle} />}
+          {(image.popupSrc || image.src) && (
+            <img src={image.popupSrc || image.src || undefined} alt={image.artist || "Konstverk"} style={imageStyle} />
+          )}
         </div>
       )}
       <div className="lb-meta">

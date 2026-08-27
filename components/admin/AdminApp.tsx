@@ -61,23 +61,29 @@ function applyItemUpdate(
 }
 
 function imageDraftPatch(image: ImageDraft, target: ImagePlacementTarget): Partial<ImageItem> {
+  // Caption fields describe the artwork itself, so they're shared and always
+  // saved regardless of which crop is being edited.
   const common = {
-    src: image.src,
     artist: image.artist,
     title: image.title,
     year: image.year,
     shortText: image.shortText,
   };
   if (target === "popup") {
+    // Popup editing has its own photo (popupSrc, falling back to the frame's
+    // src when unset) plus its own crop — it must never touch the frame's own
+    // src, or "Byt bild" while customizing the popup silently replaces the
+    // main photo too.
     return {
       ...common,
+      popupSrc: image.src,
       popupFit: image.fit,
       popupPositionX: image.positionX,
       popupPositionY: image.positionY,
       popupZoom: image.zoom,
     };
   }
-  return { ...common, fit: image.fit, positionX: image.positionX, positionY: image.positionY, zoom: image.zoom };
+  return { ...common, src: image.src, fit: image.fit, positionX: image.positionX, positionY: image.positionY, zoom: image.zoom };
 }
 
 export default function AdminApp({
@@ -150,7 +156,7 @@ export default function AdminApp({
     setEditingPlacementTarget(placementTarget);
     setImagePreview(preview ?? { aspectRatio: 16 / 9, showCaption: false, placementTarget });
     setImgDraft({
-      src: item.src,
+      src: placementTarget === "popup" ? item.popupSrc ?? item.src : item.src,
       artist: item.artist || "",
       title: item.title || "",
       year: item.year || "",
@@ -228,7 +234,7 @@ export default function AdminApp({
     if (!ref) return;
     const next =
       ref.store === "images"
-        ? applyItemUpdate(draft, ref, { src: null, artist: "", title: "", year: "", shortText: "" })
+        ? applyItemUpdate(draft, ref, { src: null, popupSrc: null, artist: "", title: "", year: "", shortText: "" })
         : ({
             ...draft,
             [ref.store]: (draft[ref.store] as Array<ArtistItem | CollageItem>).filter((x) => x.key !== ref.key),

@@ -93,6 +93,7 @@ export default function Slot({
     });
 
   const popupPlacement = placementTarget === "popup";
+  const currentSrc = popupPlacement ? item.popupSrc || item.src : item.src;
   const currentFit = popupPlacement ? item.popupFit ?? "contain" : item.fit;
   const currentPositionX = popupPlacement ? item.popupPositionX ?? 50 : item.positionX ?? 50;
   const currentPositionY = popupPlacement ? item.popupPositionY ?? 50 : item.positionY ?? 50;
@@ -183,8 +184,8 @@ export default function Slot({
 
   return (
     <div ref={slotRef} className={classes.join(" ").trim()} style={style}>
-      {item.src ? (
-        <img src={item.src} alt={item.alt || item.artist || "Galleribild"} loading="lazy" style={imageStyle} />
+      {currentSrc ? (
+        <img src={currentSrc} alt={item.alt || item.artist || "Galleribild"} loading="lazy" style={imageStyle} />
       ) : (
         <div className="slot-empty" aria-hidden="true" />
       )}
