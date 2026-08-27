@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import type { ImageItem, ImageKey, ImagePlacementTarget, ItemRef, SiteContent, SiteMode, TextKey } from "@/lib/types";
 import {
   EditorContext,
@@ -9,7 +10,7 @@ import {
   ImagePlacementPatch,
   LightboxPayload,
 } from "./EditorContext";
-import { LOGO_ASPECT, LOGO_SRC } from "@/lib/logo";
+import { LOGO_ASPECT, LOGO_HEIGHT, LOGO_SRC, LOGO_WIDTH } from "@/lib/logo";
 import Header from "./sections/Header";
 import Hero from "./sections/Hero";
 import Aktuellt from "./sections/Aktuellt";
@@ -221,7 +222,7 @@ export default function GallerySite({
       <div className={`site ${mode === "public" ? "site--public" : "site--admin"}`}>
         {mode === "public" && (
           <a id="dockClone" href="/" aria-label="Gå till startsidan" className="brand-logo-link">
-            <img src={LOGO_SRC} alt="" />
+            <Image src={LOGO_SRC} alt="" width={LOGO_WIDTH} height={LOGO_HEIGHT} sizes="120px" />
           </a>
         )}
         <Header variant={mode === "public" ? "public" : "admin"} />

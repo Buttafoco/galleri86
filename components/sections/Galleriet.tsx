@@ -30,6 +30,7 @@ export default function Galleriet({ content }: { content: SiteContent }) {
             refItem={{ store: "images", key: "spaceImg" }}
             style={{ height: 560 }}
             extraClass="mob-square"
+            sizes="(max-width: 1000px) 100vw, 50vw"
           />
           <div style={{ display: "flex", gap: 48, flexWrap: "wrap", marginTop: 32 }}>
             {[

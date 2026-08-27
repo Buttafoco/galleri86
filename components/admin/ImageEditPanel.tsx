@@ -70,14 +70,20 @@ export default function ImageEditPanel({
 
         <p className="panel-intro">
           {popupEditing
-            ? "Ändringarna visas direkt i popupens riktiga ram bakom panelen. Dra bilden för placering och dra hörnet inåt eller utåt för storlek."
+            ? "Ändringarna visas direkt i popupens riktiga ram bakom panelen. Dra bilden för placering och dra hörnet inåt eller utåt för storlek. Du kan även välja en helt annan bild här — den visas då bara i popupen, ramen på sidan påverkas inte."
             : "Redigera direkt i den orange ramen: dra bilden för placering och dra hörnet inåt eller utåt för storlek."}
         </p>
 
         <label className="file-btn" style={{ opacity: uploading ? 0.6 : 1, pointerEvents: uploading ? "none" : "auto" }}>
           <input type="file" accept="image/*" onChange={onFile} disabled={uploading} style={{ display: "none" }} />
-          {uploading ? "Laddar upp …" : "Byt bild"}
+          {uploading ? "Laddar upp …" : popupEditing ? "Byt bild i popupen" : "Byt bild"}
         </label>
+
+        {popupEditing && (
+          <button type="button" className="btn--link" onClick={() => setField("src", null)}>
+            Använd samma bild som ramen
+          </button>
+        )}
 
         <div className="placement-controls">
           <h3>{popupEditing ? "Bildanpassning i popupen" : "Bildanpassning i ramen"}</h3>

@@ -28,6 +28,8 @@ export interface ImageItem {
   popupPositionX?: number;
   popupPositionY?: number;
   popupZoom?: number;
+  /** A distinct photo shown in the popup/lightbox, if set — otherwise falls back to `src`. */
+  popupSrc?: string | null;
 }
 
 /** Fixed single-placement images, addressed by a stable key. */

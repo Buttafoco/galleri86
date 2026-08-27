@@ -37,6 +37,7 @@ export default function Utstallningar({ content }: { content: SiteContent }) {
               extraClass="mob-square"
               group="artist"
               index={i}
+              sizes="(max-width: 1000px) 50vw, 650px"
             />
             <div
               className="reveal reveal-d1"
