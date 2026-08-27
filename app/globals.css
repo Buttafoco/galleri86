@@ -156,7 +156,26 @@ header.top.menu-open { z-index: 950; }
 .lb-nav.prev { left: 32px; } .lb-nav.next { right: 32px; }
 .lb-nav:focus-visible { outline: 2px solid #F7F6F2; outline-offset: 2px; border-radius: 4px; }
 .lb-meta { position: fixed; left: 50%; bottom: 6vh; transform: translateX(-50%); z-index: 310; color: #F7F6F2;
-           text-align: center; pointer-events: none; max-width: 640px; padding: 0 24px; }
+           text-align: center; pointer-events: none; max-width: 640px; padding: 0 24px;
+           isolation: isolate; text-shadow: 0 2px 8px rgb(0 0 0 / 90%); }
+/* permanent soft dark halo behind the caption so it stays readable over light
+   artwork — unlike .cap-grad this isn't hover-gated, since the lightbox has
+   no separate "closed" state to fade in from */
+.lb-meta::before {
+  content: "";
+  position: absolute;
+  inset: -34px -84px -38px;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    rgb(0 0 0 / 85%) 0%,
+    rgb(0 0 0 / 65%) 38%,
+    rgb(0 0 0 / 32%) 65%,
+    transparent 84%
+  );
+  filter: blur(4px);
+}
 .lb-meta .a { font-family: var(--font-newsreader), Georgia, serif; font-style: italic; font-size: 19px; margin-bottom: 4px; }
 .lb-meta .y { font-size: 12px; letter-spacing: 0.08em; opacity: 0.7; }
 .lb-meta .t { font-size: 15px; opacity: 0.8; margin-top: 6px; }
