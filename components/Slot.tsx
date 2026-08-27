@@ -227,10 +227,13 @@ export default function Slot({
       )}
 
       {showCaption && (item.artist || item.year) && (
-        <div className="cap">
-          <span>{item.artist}</span>
-          <span>{item.year}</span>
-        </div>
+        <>
+          <div className="cap-grad" aria-hidden="true" />
+          <div className="cap">
+            <span>{item.artist}</span>
+            <span>{item.year}</span>
+          </div>
+        </>
       )}
 
       {!active && !disableLightbox && (
