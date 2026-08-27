@@ -25,9 +25,15 @@ a:hover { color: #C97A55; }
 /* zoomable */
 .zoomable { cursor: zoom-in; transition: transform .4s cubic-bezier(0.16, 1, 0.3, 1); }
 .slot.zoomable:hover { transform: scale(0.96); }
+/* dark gradient behind the hover caption so white text stays readable on light
+   artwork — fades in/out together with .cap, never darkens the image at rest */
+.cap-grad { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .35s ease;
+            z-index: 3;
+            background: linear-gradient(to top, rgb(0 0 0 / 75%) 0%, rgb(0 0 0 / 30%) 39%, rgb(0 0 0 / 0%) 69%); }
+.zoomable:hover .cap-grad { opacity: 1; }
 .cap { position: absolute; left: 20px; right: 20px; bottom: 20px; display: flex; justify-content: space-between;
        color: #F7F6F2; font-size: 14px; pointer-events: none; opacity: 0; transition: opacity .35s ease;
-       text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35); z-index: 4; }
+       text-shadow: 0 1px 4px rgb(0 0 0 / 45%); z-index: 4; }
 .zoomable:hover .cap { opacity: 1; }
 
 /* the invisible click target that opens the lightbox */
@@ -342,8 +348,9 @@ header.top.menu-open { z-index: 950; }
 .panel-caption-preview { position: relative; width: 100%; height: 200px; border-radius: 10px; overflow: hidden; background: #EAE7E0; }
 .panel-caption-preview img { width: 100%; height: 100%; object-fit: cover; }
 .panel-caption-preview .grad { position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.28) 45%, rgba(0,0,0,0) 75%); }
-.panel-caption-preview .meta { position: absolute; left: 16px; right: 16px; bottom: 14px; color: #F7F6F2; }
+  background: linear-gradient(to top, rgb(0 0 0 / 75%) 0%, rgb(0 0 0 / 30%) 39%, rgb(0 0 0 / 0%) 69%); }
+.panel-caption-preview .meta { position: absolute; left: 16px; right: 16px; bottom: 14px; color: #F7F6F2;
+  text-shadow: 0 1px 4px rgb(0 0 0 / 45%); z-index: 1; }
 .panel-caption-preview .meta .row { display: flex; justify-content: space-between; align-items: baseline; }
 .panel-caption-preview .meta .a { font-family: var(--font-newsreader), Georgia, serif; font-style: italic; font-size: 17px; }
 .panel-caption-preview .meta .y { font-size: 12px; opacity: 0.8; }
