@@ -59,6 +59,7 @@ export default function Collage({ content }: { content: SiteContent }) {
             refItem={{ store: "collage", key: c.key }}
             style={{ width: "100%", height: "100%" }}
             sizes={`(max-width: 1000px) 50vw, ${c.kind === "wide" ? "50vw" : "25vw"}`}
+            eager
           />
         </div>
       ))}
