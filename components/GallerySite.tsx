@@ -104,10 +104,12 @@ export default function GallerySite({
     [mode, handlers],
   );
 
-  // Scroll-reveal (runs in public & preview; harmless in edit).
+  // Scroll-reveal (runs in public & preview; harmless in edit). Some .reveal
+  // elements — the closed Galleri grid's images — don't exist yet when this
+  // effect first runs (they mount later, on demand, once the visitor opens
+  // it); a MutationObserver picks those up too, so they still get an "in"
+  // class and aren't left stuck at opacity:0 forever.
   useEffect(() => {
-    const els = Array.from(document.querySelectorAll<HTMLElement>(".reveal:not(.in)"));
-    if (els.length === 0) return;
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
@@ -119,8 +121,24 @@ export default function GallerySite({
       },
       { threshold: 0.18, rootMargin: "0px 0px -6% 0px" },
     );
-    els.forEach((el) => io.observe(el));
-    return () => io.disconnect();
+    const observeNew = (root: ParentNode) => {
+      root.querySelectorAll<HTMLElement>(".reveal:not(.in)").forEach((el) => io.observe(el));
+    };
+    observeNew(document);
+    const mo = new MutationObserver((mutations) => {
+      for (const m of mutations) {
+        m.addedNodes.forEach((node) => {
+          if (!(node instanceof HTMLElement)) return;
+          if (node.matches(".reveal:not(.in)")) io.observe(node);
+          observeNew(node);
+        });
+      }
+    });
+    mo.observe(document.body, { childList: true, subtree: true });
+    return () => {
+      io.disconnect();
+      mo.disconnect();
+    };
   }, [mode, content]);
 
   // Hero title dock (public only — the admin shell uses a static header).
