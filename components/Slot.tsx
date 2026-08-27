@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from "react";
+import Image from "next/image";
 import type { ImageItem, ImagePlacementTarget, ItemRef } from "@/lib/types";
 import { useEditor } from "./EditorContext";
 
@@ -26,6 +27,18 @@ interface SlotProps {
   placementTarget?: ImagePlacementTarget;
   /** Optional label for the edit button in specialized frames. */
   editLabel?: string;
+  /** Mark this as the actual LCP candidate on EVERY viewport — triggers next/image's
+   * unconditional (non-viewport-aware) preload plus fetchpriority=high. Only use this
+   * for an image that's genuinely the largest paint on all breakpoints; when the LCP
+   * element differs by viewport, prefer `eager` here and add a manually
+   * viewport-scoped `<link rel="preload" media="...">` instead (see app/page.tsx). */
+  priority?: boolean;
+  /** Load immediately (not lazily) without the unconditional preload/fetchpriority=high
+   * that `priority` adds — for an image that's above the fold on some but not all
+   * viewports, so it shouldn't compete for top fetch priority everywhere. */
+  eager?: boolean;
+  /** Responsive `sizes` hint matching this slot's real rendered width, for next/image's srcset. */
+  sizes?: string;
 }
 
 export default function Slot({
@@ -40,6 +53,9 @@ export default function Slot({
   disableLightbox = false,
   placementTarget = "frame",
   editLabel = "Redigera bild",
+  priority = false,
+  eager = false,
+  sizes = "100vw",
 }: SlotProps) {
   const { mode, openLightbox, openImageEdit, activeImageRef, activePlacementTarget, updateImagePlacement } = useEditor();
   const editing = mode === "edit";
@@ -98,7 +114,18 @@ export default function Slot({
   const currentPositionX = popupPlacement ? item.popupPositionX ?? 50 : item.positionX ?? 50;
   const currentPositionY = popupPlacement ? item.popupPositionY ?? 50 : item.positionY ?? 50;
   const currentZoom = popupPlacement ? item.popupZoom ?? 100 : item.zoom ?? 100;
-  const imageStyle: CSSProperties = {};
+  // Explicit base position/inset for next/image's `fill` mode — replicates the
+  // `.slot img { top:50%; left:50%; transform:translate(-50%,-50%) }` centering
+  // rule from globals.css (which still applies as a fallback outside of these
+  // properties) instead of Next's own inset:0 fill defaults, so the pan/zoom
+  // transform math below (anchored on that same -50%/-50% centering) keeps working.
+  const imageStyle: CSSProperties = {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    transform: "translate(-50%, -50%)",
+  };
   if (currentFit) imageStyle.objectFit = currentFit;
   if (popupPlacement || typeof item.positionX === "number" || typeof item.positionY === "number") {
     imageStyle.objectPosition = `${currentPositionX}% ${currentPositionY}%`;
@@ -185,7 +212,16 @@ export default function Slot({
   return (
     <div ref={slotRef} className={classes.join(" ").trim()} style={style}>
       {currentSrc ? (
-        <img src={currentSrc} alt={item.alt || item.artist || "Galleribild"} loading="lazy" style={imageStyle} />
+        <Image
+          src={currentSrc}
+          alt={item.alt || item.artist || "Galleribild"}
+          fill
+          sizes={sizes}
+          quality={75}
+          priority={priority}
+          loading={priority ? undefined : eager ? "eager" : undefined}
+          style={imageStyle}
+        />
       ) : (
         <div className="slot-empty" aria-hidden="true" />
       )}

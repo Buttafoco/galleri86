@@ -9,11 +9,20 @@ export default function Collage({ content }: { content: SiteContent }) {
   const { mode, openAdd } = useEditor();
   const editing = mode === "edit";
   const [open, setOpen] = useState(false);
+  // Once the visitor has opened the gallery, keep its images mounted (so
+  // toggling closed/open again doesn't re-fetch them) — but on the public
+  // site, don't mount them at all until that first open, so their <img>s
+  // aren't requested during the initial page load while the panel is
+  // visually collapsed to 0 height.
+  const [everOpened, setEverOpened] = useState(false);
 
   const visible = content.collage.filter((c) => editing || !c.hidden);
 
   useEffect(() => {
-    const openGallery = () => setOpen(true);
+    const openGallery = () => {
+      setOpen(true);
+      setEverOpened(true);
+    };
     const openGalleryFromHash = () => {
       if (window.location.hash === "#galleriet") openGallery();
     };
@@ -49,6 +58,7 @@ export default function Collage({ content }: { content: SiteContent }) {
             item={c}
             refItem={{ store: "collage", key: c.key }}
             style={{ width: "100%", height: "100%" }}
+            sizes={`(max-width: 1000px) 50vw, ${c.kind === "wide" ? "50vw" : "25vw"}`}
           />
         </div>
       ))}
@@ -102,12 +112,16 @@ export default function Collage({ content }: { content: SiteContent }) {
                 "grid-template-rows 1.3s cubic-bezier(0.65,0,0.35,1), opacity 1.1s ease-in-out, margin-top 1.3s cubic-bezier(0.65,0,0.35,1)",
             }}
           >
-            <div style={{ minHeight: 0, overflow: "hidden" }}>{grid}</div>
+            <div style={{ minHeight: 0, overflow: "hidden" }}>{everOpened ? grid : null}</div>
           </div>
           <div style={{ display: "flex", justifyContent: "center", marginTop: 56 }}>
             <button
               type="button"
-              onClick={() => setOpen((v) => !v)}
+              onClick={() => setOpen((v) => {
+                const next = !v;
+                if (next) setEverOpened(true);
+                return next;
+              })}
               aria-expanded={open}
               style={{
                 background: "none",

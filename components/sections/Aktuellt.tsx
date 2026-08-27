@@ -91,6 +91,7 @@ export default function Aktuellt({ content }: { content: SiteContent }) {
           refItem={{ store: "images", key: "curImg" }}
           extraClass="slot--current"
           style={{ height: 640 }}
+          sizes="(max-width: 1000px) 100vw, 55vw"
         />
         <div>
           <div className="reveal reveal-d1" style={{ ...eyebrowLabelStyle, marginBottom: 18 }}>
@@ -167,6 +168,7 @@ export default function Aktuellt({ content }: { content: SiteContent }) {
                 item={content.images.curPopupImg}
                 refItem={{ store: "images", key: "curPopupImg" }}
                 style={{ width: 72, height: 72, flexShrink: 0 }}
+                sizes="72px"
               />
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                 <span style={{ fontSize: 11, opacity: 0.55, textTransform: "uppercase", letterSpacing: "0.08em" }}>

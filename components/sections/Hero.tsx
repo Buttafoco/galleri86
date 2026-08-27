@@ -1,10 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import type { SiteContent } from "@/lib/types";
 import Slot from "../Slot";
 import EditText from "../EditText";
 import SectionTag from "../SectionTag";
-import { LOGO_ALT, LOGO_SRC } from "@/lib/logo";
+import { LOGO_ALT, LOGO_HEIGHT, LOGO_SRC, LOGO_WIDTH } from "@/lib/logo";
 import { EXTERNAL_LINK_PROPS, FACEBOOK_URL, INSTAGRAM_URL } from "@/lib/social";
 
 export default function Hero({ content }: { content: SiteContent }) {
@@ -33,10 +34,14 @@ export default function Hero({ content }: { content: SiteContent }) {
       </div>
 
       <div>
-        <img
+        <Image
           id="heroTitle"
           src={LOGO_SRC}
           alt={LOGO_ALT}
+          width={LOGO_WIDTH}
+          height={LOGO_HEIGHT}
+          priority
+          sizes="(max-width: 1000px) 100vw, 380px"
           style={{ display: "block", width: "100%", height: "auto", objectFit: "contain", margin: "0 0 24px" }}
         />
         <h1
@@ -72,6 +77,7 @@ export default function Hero({ content }: { content: SiteContent }) {
             showCaption
             group="hero"
             index={0}
+            sizes="(max-width: 1000px) 100vw, 380px"
           />
         </div>
         <div className="mob-square" style={{ marginTop: 24, height: 300, width: "100%", position: "relative" }}>
@@ -82,6 +88,7 @@ export default function Hero({ content }: { content: SiteContent }) {
             showCaption
             group="hero"
             index={1}
+            sizes="(max-width: 1000px) 100vw, 380px"
           />
         </div>
       </div>
@@ -105,6 +112,8 @@ export default function Hero({ content }: { content: SiteContent }) {
           showCaption
           group="hero"
           index={2}
+          eager
+          sizes="(max-width: 1000px) 100vw, 500px"
         />
         <div style={{ display: "grid", gap: 24, alignContent: "start" }}>
           <Slot
@@ -116,6 +125,7 @@ export default function Hero({ content }: { content: SiteContent }) {
             showCaption
             group="hero"
             index={3}
+            sizes="(max-width: 1000px) 100vw, 390px"
           />
           <Slot
             item={img.heroC2}
@@ -126,6 +136,7 @@ export default function Hero({ content }: { content: SiteContent }) {
             showCaption
             group="hero"
             index={4}
+            sizes="(max-width: 1000px) 100vw, 390px"
           />
         </div>
         <div style={{ gridColumn: "1 / -1" }}>
@@ -138,6 +149,7 @@ export default function Hero({ content }: { content: SiteContent }) {
             showCaption
             group="hero"
             index={5}
+            sizes="(max-width: 1000px) 100vw, 890px"
           />
         </div>
       </div>

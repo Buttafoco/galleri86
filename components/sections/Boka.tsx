@@ -8,7 +8,7 @@ const inputStyle: React.CSSProperties = {
   background: "transparent",
   padding: "6px 0",
   fontSize: 15,
-  fontFamily: "'Newsreader',Georgia,serif",
+  fontFamily: "var(--font-newsreader), Georgia, serif",
   outline: "none",
   color: "#111111",
 };
@@ -92,7 +92,7 @@ export default function Boka() {
             fontSize: 13,
             letterSpacing: "0.06em",
             textTransform: "uppercase",
-            fontFamily: "'Inter',Helvetica,Arial,sans-serif",
+            fontFamily: "var(--font-inter), Helvetica, Arial, sans-serif",
             border: "none",
             borderBottom: "1px solid #C97A55",
             cursor: "pointer",

@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { LOGO_SRC } from "@/lib/logo";
+import { LOGO_HEIGHT, LOGO_SRC, LOGO_WIDTH } from "@/lib/logo";
 
 const NAV = [
   { href: "#utstallningar", label: "Utställningar" },
@@ -91,10 +92,20 @@ export default function Header({ variant }: { variant: "public" | "admin" | "pag
     <>
     <header className={`top${open ? " menu-open" : ""}`}>
       {variant === "public" ? (
-        <img id="headerSlot" src={LOGO_SRC} alt="" aria-hidden="true" className="brand-logo" style={{ visibility: "hidden" }} />
+        <Image
+          id="headerSlot"
+          src={LOGO_SRC}
+          alt=""
+          aria-hidden="true"
+          className="brand-logo"
+          width={LOGO_WIDTH}
+          height={LOGO_HEIGHT}
+          sizes="120px"
+          style={{ visibility: "hidden" }}
+        />
       ) : (
         <a href="/" aria-label="Gå till startsidan" className="brand-logo-link">
-          <img src={LOGO_SRC} alt="" className="brand-logo" />
+          <Image src={LOGO_SRC} alt="" className="brand-logo" width={LOGO_WIDTH} height={LOGO_HEIGHT} sizes="120px" />
         </a>
       )}
 
